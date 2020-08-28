@@ -22,13 +22,17 @@ body
   margin-right: auto;
   width: 50%;
 }
+#bidlogo:hover
+{
+	cursor: pointer;
+}
 </style>
 </head>
 
 <body>
     <div class="container">
     	<img src="nes-auction.gif" class="center"/>
-    	<img src="bidlogo.png" class="center" onclick="startBid()" />
+    	<img id="bidlogo" src="bidlogo.png" class="center" onclick="startBid()" />
         <audio id="bidaudio" src=""></audio>
         <audio id="tickaudio" src="assets/tick.wav"></audio>
         <audio id="tockaudio" src="assets/tock.wav"></audio>
