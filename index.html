@@ -1,0 +1,129 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Monopoly Auction Timer</title>
+<style>
+body
+{
+	margin: 0;
+	padding: 0;
+	background-color:black;
+}
+.container
+{
+	width: 80%;
+	margin: 20px auto;
+}
+.center {
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+  width: 50%;
+}
+#bidlogo:hover
+{
+	cursor: pointer;
+}
+</style>
+</head>
+
+<body>
+    <div class="container">
+    	<img src="nes-auction.gif" class="center"/>
+    	<img id="bidlogo" src="bidlogo.png" class="center" onclick="startBid()" />
+        <audio id="bidaudio" src=""></audio>
+        <audio id="tickaudio" src="assets/tick.wav"></audio>
+        <audio id="tockaudio" src="assets/tock.wav"></audio>
+        <audio id="soldaudio" src="assets/sold.wav"></audio>
+    </div>
+    <script>
+	var currentBid = [];
+	var completedBid, nextBid;
+	var playtick, playtock, playsold;
+	var bid = document.getElementById("bidaudio");
+	var tick = document.getElementById("tickaudio");
+	var tock = document.getElementById("tockaudio");
+	var sold = document.getElementById("soldaudio");	
+	
+	function startBid()
+	{
+		if(currentBid.length == 0)
+		{
+			currentBid.push("001");
+			playBid(currentBid[0]);			
+		}
+		else
+		{
+			clearTimeout(playtick);
+			clearTimeout(playtock);
+			clearTimeout(playsold);
+			completedBid = Number(currentBid[0]);			
+			if(completedBid < 30)
+			{
+				if(completedBid < 9)
+				{
+					nextBid = "00"+parseInt(completedBid + 1);
+					currentBid[0] = nextBid;
+					playBid(nextBid);
+				}
+				else
+				{
+					nextBid = "0"+parseInt(completedBid + 1);
+					currentBid[0] = nextBid;
+					playBid(nextBid);
+				}					
+			}
+			else
+			{
+				currentBid[0] = "001";
+				playBid(currentBid[0]);
+			}				
+		}
+	}
+	function playBid(cbid)
+	{
+		bid.src = "assets/bid"+cbid+".wav";
+		bid.play();
+		bid.onended = function() {
+			playtick = setTimeout(function(){ playTick1(); }, 600);
+		};
+	}
+	function playTick1()
+	{
+	console.log("Tick1");
+		tick.play();
+		tick.onended = function() {
+			playtock = setTimeout(function(){ playTock1(); }, 1000);
+		};
+	}
+	function playTock1()
+	{console.log("Tock1");
+		tock.play();
+		tock.onended = function() {
+			playtick = setTimeout(function(){ playTick2(); }, 1000);
+		};
+	}
+	function playTick2()
+	{console.log("Tock1");
+		tick.play();
+		tick.onended = function() {
+			playtock = setTimeout(function(){ playTock2(); }, 1000);
+		};
+	}
+	function playTock2()
+	{console.log("Tock1");
+		tock.play();
+		tock.onended = function() {
+			playsold = setTimeout(function(){ playSold(); }, 1000);
+		};
+	}
+	function playSold()
+	{
+		sold.play();
+		sold.onended = function() { currentBid.pop(); };
+	}	
+	</script>
+</body>
+</html>
